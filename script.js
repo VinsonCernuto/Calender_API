@@ -92,7 +92,7 @@ function init(){
     if (stored) {
         dayEl = stored;
     }
-    (saveInfo);
+    saveInfo();
     displayInfo();
 }
 // - Change time block background color depending in the current hour (past, present and future).
@@ -109,7 +109,7 @@ dayEl.forEach(function(currentHour){
  });
 
  // creates plan data
- var hourPlan = $("<div>")
+ var hourPlan = $("<textarea>")
      .attr({
          "class": "col-md-10 description p-0"
      });
@@ -152,4 +152,4 @@ $(".saveBtn").on("click", function(event) {
  console.log(saveIndex);
  saveInfo();
  displayInfo();
-});
+})
