@@ -80,8 +80,8 @@ function saveInfo(){
 
 //sets data in the store to the text box
 function displayInfo(){
-    dayEl.forEach(function (_thishour) {
-        $("#${_thisHour.id}").val(_thishour.reminder);
+    dayEl.forEach(function (currentHour) {
+        $("#currentHour").val(currentHour.reminder);
     })
 }
 
@@ -89,11 +89,67 @@ function displayInfo(){
 function init(){
     var stored = JSON.parse(localStorage.getItem("dayEl"));
 
-    if (storedDay) {
-        dayEl = storedDay;
+    if (stored) {
+        dayEl = stored;
     }
-    saveReminder();
-    displayReminder();
+    (saveInfo);
+    displayInfo();
 }
 // - Change time block background color depending in the current hour (past, present and future).
-console.log(moment().hour())
+dayEl.forEach(function(currentHour){
+    var hourRow = $("<form>").attr({
+        "class": "row"
+    });
+    $(".container").append(hourRow);
+     // creates time field
+     var hourField = $("<div>")
+     .text(`${currentHour.hour}${currentHour.meridiem}`)
+     .attr({
+         "class": "col-md-1 hour"
+ });
+
+ // creates plan data
+ var hourPlan = $("<div>")
+     .attr({
+         "class": "col-md-10 description p-0"
+     });
+ var planData = $("<textarea>");
+ hourPlan.append(planData);
+ planData.attr("id", currentHour.id);
+ if (currentHour.time < moment().format("HH")) {
+     planData.attr ({
+         "class": "past", 
+     })
+ } else if (currentHour.time === moment().format("HH")) {
+     planData.attr({
+         "class": "present"
+     })
+ } else if (currentHour.time > moment().format("HH")) {
+     planData.attr({
+         "class": "future"
+     })
+ }
+
+ // creates the save button
+ var saveButton = $("<i class='far fa-save fa-lg'></i>")
+ var savePlan = $("<button>")
+     .attr({
+         "class": "col-md-1 saveBtn"
+ });
+ savePlan.append(saveButton);
+ hourRow.append(hourField, hourPlan, savePlan);
+})
+
+// loads any existing localstorage data after components created
+init();
+
+
+// saves data to be used in localStorage
+$(".saveBtn").on("click", function(event) {
+ event.preventDefault();
+ var saveIndex = $(this).siblings(".description").children(".future").attr("id");
+ dayEl[saveIndex].reminder = $(this).siblings(".description").children(".future").val();
+ console.log(saveIndex);
+ saveInfo();
+ displayInfo();
+});
